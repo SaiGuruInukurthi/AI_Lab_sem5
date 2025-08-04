@@ -10,56 +10,27 @@ To implement Breadth-First Search (BFS) and Uniform-Cost Search algorithms for g
 ## Description:
 
 ### Breadth-First Search (BFS):
-Breadth-First Search is a simple strategy in which the root node is expanded first, then all the successors of the root node are expanded next, then their successors, and so on. BFS is an instance of the general graph-search algorithm, in which the shallowest unexpanded node is chosen for expansion.
+Breadth-First Search explores nodes level by level using a FIFO queue, expanding the shallowest unexpanded node first.
 
-**Solving the Tree Problem in exp 6.1.png:**
-As illustrated in **exp 6.1.png**, the diagram shows a tree structure where we need to find a path from root A to a goal node. BFS would solve this by exploring level by level:
-
-1. **Step 1:** Start with root node A in the frontier queue: [A]
-2. **Step 2:** Expand A (marked with ▷), add its children B and C to frontier: [B, C]  
-3. **Step 3:** Expand B (first in queue), add its children D and E to frontier: [C, D, E]
-4. **Step 4:** Expand C next, add its children F and G to frontier: [D, E, F, G]
-5. **Step 5:** Continue expanding D, E, F, G in order until goal is found
-
-The progressive expansion shown in the four tree diagrams demonstrates how BFS systematically explores each level before moving deeper. The algorithm uses a FIFO (First-In-First-Out) queue for the frontier, ensuring that nodes are processed in the order they were discovered. The goal test is applied when a node is selected for expansion. BFS is optimal when all step costs are equal, as it finds the solution with the minimum number of steps.
+**Solving exp 6.1.png:** BFS traverses the tree systematically - Start with A [A] → Expand A, add B,C [B,C] → Expand B, add D,E [C,D,E] → Expand C, add F,G [D,E,F,G] → Continue until goal found.
 
 **Key Characteristics:**
-- **Completeness:** Always finds a solution if one exists
-- **Optimality:** Optimal when path cost = depth (uniform step costs)
-- **Time Complexity:** O(b^(d+1)) where b = branching factor, d = depth level  
-- **Space Complexity:** O(b^d)
+- **Time Complexity:** O(b^(d+1)), **Space Complexity:** O(b^d)
+- **Optimal** when all step costs are equal
 
 ### Uniform-Cost Search (UCS):
-Uniform-Cost Search expands the node with the lowest path cost g(n) instead of the shallowest node. Unlike BFS, UCS considers the actual cost of reaching each node, making it suitable for weighted graphs where edge costs vary.
+Uniform-Cost Search expands nodes with the lowest path cost using a priority queue, suitable for weighted graphs.
 
-**Solving the Weighted Graph Problem in exp 6.2.png:**
-As shown in **exp 6.2.png**, the diagram presents a weighted graph with nodes S, E, F, C, D, A and edges with specific costs. UCS would solve this pathfinding problem as follows:
-
-1. **Initialize:** Start at node S with cost 0, priority queue: [(0, S)]
-2. **Step 1:** Expand S (lowest cost), add neighbors with cumulative costs:
-   - To E: cost = 0 + edge_cost(S→E) 
-   - To F: cost = 0 + edge_cost(S→F)
-   - Priority queue updates with new costs
-3. **Step 2:** Select node with lowest cumulative cost from frontier
-4. **Step 3:** Expand selected node, calculate new path costs to neighbors:
-   - For each neighbor: new_cost = current_cost + edge_cost
-   - Add to priority queue if not explored or if better path found
-5. **Step 4:** Continue until goal node (e.g., A) is selected for expansion
-
-The red highlighted edges in the diagram likely represent the optimal path found by UCS. The algorithm maintains a priority queue ordered by cumulative path cost and always expands the node with the lowest total cost from the start, ensuring the optimal solution is found.
+**Solving exp 6.2.png:** UCS finds optimal paths in weighted graphs - Start at S with cost 0 → Expand lowest-cost nodes first → Calculate cumulative costs (current_cost + edge_cost) → Continue until goal reached with minimum total cost.
 
 **Key Characteristics:**
-- **Completeness:** Complete if step cost ≥ ε (some small positive constant)
-- **Optimality:** Always finds the least-cost solution
-- **Time/Space Complexity:** O(b^(⌈C*/ε⌉)) where C* is the cost of optimal solution
-- **Priority Queue:** Uses min-heap to efficiently select lowest-cost node
+- **Time/Space Complexity:** O(b^(⌈C*/ε⌉)) where C* = optimal cost
+- **Always finds least-cost solution**
 
 **Key Differences from BFS:**
-1. Uses priority queue ordered by path cost instead of FIFO queue
-2. Goal test applied when node is selected for expansion, not when generated
-3. Considers edge weights/costs, not just number of steps
-4. May expand the same node multiple times if a better path is found
-5. Optimal for any step cost function, not just uniform costs
+1. Uses priority queue (cost-based) vs FIFO queue
+2. Considers edge weights, not just steps
+3. Optimal for any step cost function
 
 ## Program 1 (BFS):
 
