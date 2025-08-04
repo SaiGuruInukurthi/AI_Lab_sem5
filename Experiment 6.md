@@ -12,13 +12,16 @@ To implement Breadth-First Search (BFS) and Uniform-Cost Search algorithms for g
 ### Breadth-First Search (BFS):
 Breadth-First Search is a simple strategy in which the root node is expanded first, then all the successors of the root node are expanded next, then their successors, and so on. BFS is an instance of the general graph-search algorithm, in which the shallowest unexpanded node is chosen for expansion.
 
-As illustrated in **exp 6.1.png**, BFS explores the search tree level by level:
-- **Level 0:** Start with root node A
-- **Level 1:** Expand A, revealing children B and C
-- **Level 2:** Expand B and C, revealing D, E, F, G
-- **Level 3:** Continue expanding at each level until goal is found
+**Solving the Tree Problem in exp 6.1.png:**
+As illustrated in **exp 6.1.png**, the diagram shows a tree structure where we need to find a path from root A to a goal node. BFS would solve this by exploring level by level:
 
-The algorithm uses a FIFO (First-In-First-Out) queue for the frontier, ensuring that nodes are processed in the order they were discovered. The goal test is applied when a node is selected for expansion. BFS is optimal when all step costs are equal, as it finds the solution with the minimum number of steps.
+1. **Step 1:** Start with root node A in the frontier queue: [A]
+2. **Step 2:** Expand A (marked with ▷), add its children B and C to frontier: [B, C]  
+3. **Step 3:** Expand B (first in queue), add its children D and E to frontier: [C, D, E]
+4. **Step 4:** Expand C next, add its children F and G to frontier: [D, E, F, G]
+5. **Step 5:** Continue expanding D, E, F, G in order until goal is found
+
+The progressive expansion shown in the four tree diagrams demonstrates how BFS systematically explores each level before moving deeper. The algorithm uses a FIFO (First-In-First-Out) queue for the frontier, ensuring that nodes are processed in the order they were discovered. The goal test is applied when a node is selected for expansion. BFS is optimal when all step costs are equal, as it finds the solution with the minimum number of steps.
 
 **Key Characteristics:**
 - **Completeness:** Always finds a solution if one exists
@@ -29,11 +32,21 @@ The algorithm uses a FIFO (First-In-First-Out) queue for the frontier, ensuring 
 ### Uniform-Cost Search (UCS):
 Uniform-Cost Search expands the node with the lowest path cost g(n) instead of the shallowest node. Unlike BFS, UCS considers the actual cost of reaching each node, making it suitable for weighted graphs where edge costs vary.
 
-As shown in **exp 6.2.png**, UCS uses a weighted graph representation where:
-- Each edge has an associated cost (shown as numbers on the edges)
-- The algorithm maintains a priority queue ordered by cumulative path cost
-- Nodes are expanded in order of increasing path cost, not depth
-- Multiple paths to the same node may be considered, with the lowest-cost path being preferred
+**Solving the Weighted Graph Problem in exp 6.2.png:**
+As shown in **exp 6.2.png**, the diagram presents a weighted graph with nodes S, E, F, C, D, A and edges with specific costs. UCS would solve this pathfinding problem as follows:
+
+1. **Initialize:** Start at node S with cost 0, priority queue: [(0, S)]
+2. **Step 1:** Expand S (lowest cost), add neighbors with cumulative costs:
+   - To E: cost = 0 + edge_cost(S→E) 
+   - To F: cost = 0 + edge_cost(S→F)
+   - Priority queue updates with new costs
+3. **Step 2:** Select node with lowest cumulative cost from frontier
+4. **Step 3:** Expand selected node, calculate new path costs to neighbors:
+   - For each neighbor: new_cost = current_cost + edge_cost
+   - Add to priority queue if not explored or if better path found
+5. **Step 4:** Continue until goal node (e.g., A) is selected for expansion
+
+The red highlighted edges in the diagram likely represent the optimal path found by UCS. The algorithm maintains a priority queue ordered by cumulative path cost and always expands the node with the lowest total cost from the start, ensuring the optimal solution is found.
 
 **Key Characteristics:**
 - **Completeness:** Complete if step cost ≥ ε (some small positive constant)
