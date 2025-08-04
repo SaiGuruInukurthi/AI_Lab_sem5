@@ -1,4 +1,4 @@
-# Experiment-3
+# Experiment-4
 
 ## Aim:
 To write a Python program to solve the Water Jug problem by simulating the state changes based on user-defined operations, demonstrating a classic state-space search problem in Artificial Intelligence.
