@@ -1,8 +1,6 @@
 # Experiment-6
 
-> **⚠️ Warning!** 
-> 
-> This is still unrefined and needs some clarification from lab lecturer before noting down. Use this as a reference at your own risk.
+
 
 ## Aim:
 To implement Breadth-First Search (BFS) and Uniform-Cost Search algorithms for graph traversal and pathfinding, demonstrating uninformed search strategies in Artificial Intelligence.
