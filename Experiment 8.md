@@ -30,393 +30,123 @@ In this implementation, the computer selects a random word from a predefined lis
 ```python
 import random
 
-class HangmanGame:
+def display_word(word, guessed_letters):
     """
-    A class to represent the Hangman game.
+    Display the current state of the word with guessed letters revealed.
     """
+    display = ""
+    for letter in word:
+        if letter in guessed_letters:
+            display += letter + " "
+        else:
+            display += "_ "
+    return display.strip()
+
+def hangman_game():
+    """
+    Main function to play the Hangman game.
+    """
+    # List of fruit names for the game
+    word_list = ["apple", "banana", "orange", "mango", "grape", "cherry", 
+                 "lemon", "peach", "melon", "berry"]
     
-    def __init__(self, word_list, max_attempts=6):
-        """
-        Initialize the game with a word list and maximum attempts.
-        """
-        self.word_list = word_list
-        self.max_attempts = max_attempts
-        self.secret_word = ""
-        self.guessed_letters = set()
-        self.incorrect_guesses = set()
-        self.remaining_attempts = max_attempts
-        self.game_over = False
-        self.won = False
+    # Select a random word from the list
+    word = random.choice(word_list).lower()
     
-    def start_new_game(self):
-        """
-        Start a new game by selecting a random word and resetting the game state.
-        """
-        self.secret_word = random.choice(self.word_list).upper()
-        self.guessed_letters = set()
-        self.incorrect_guesses = set()
-        self.remaining_attempts = self.max_attempts
-        self.game_over = False
-        self.won = False
-        print("\n" + "="*50)
-        print("NEW HANGMAN GAME STARTED!")
-        print("="*50)
+    # Set to store guessed letters
+    guessed_letters = set()
     
-    def get_display_word(self):
-        """
-        Return the current state of the word with guessed letters revealed.
-        """
-        display = ""
-        for letter in self.secret_word:
-            if letter in self.guessed_letters:
-                display += letter + " "
-            else:
-                display += "_ "
-        return display.strip()
+    # Display game start
+    print("Guess the word! HINT: word is a name of a fruit")
     
-    def display_hangman(self):
-        """
-        Display the hangman figure based on remaining attempts.
-        """
-        stages = [
-            # Stage 6 - Final stage
-            """
-               --------
-               |      |
-               |      O
-               |     \\|/
-               |      |
-               |     / \\
-               -
-            """,
-            # Stage 5
-            """
-               --------
-               |      |
-               |      O
-               |     \\|/
-               |      |
-               |     / 
-               -
-            """,
-            # Stage 4
-            """
-               --------
-               |      |
-               |      O
-               |     \\|/
-               |      |
-               |      
-               -
-            """,
-            # Stage 3
-            """
-               --------
-               |      |
-               |      O
-               |     \\|
-               |      |
-               |     
-               -
-            """,
-            # Stage 2
-            """
-               --------
-               |      |
-               |      O
-               |      |
-               |      |
-               |     
-               -
-            """,
-            # Stage 1
-            """
-               --------
-               |      |
-               |      O
-               |    
-               |      
-               |     
-               -
-            """,
-            # Stage 0 - Initial stage
-            """
-               --------
-               |      |
-               |      
-               |    
-               |      
-               |     
-               -
-            """
-        ]
-        return stages[self.remaining_attempts]
+    # Display initial state (all underscores)
+    print(display_word(word, guessed_letters))
     
-    def make_guess(self, letter):
-        """
-        Process a player's guess and update the game state.
-        """
-        letter = letter.upper()
+    # Game loop
+    while True:
+        # Get user input
+        guess = input("Enter a letter to guess: ").lower()
+        
+        # Validate input
+        if len(guess) != 1 or not guess.isalpha():
+            print("Please enter a single letter.")
+            continue
         
         # Check if letter was already guessed
-        if letter in self.guessed_letters or letter in self.incorrect_guesses:
-            print(f"\nYou already guessed '{letter}'. Try a different letter.")
-            return False
+        if guess in guessed_letters:
+            print("You already guessed that letter. Try another one.")
+            continue
         
-        # Check if the guess is valid (single letter)
-        if len(letter) != 1 or not letter.isalpha():
-            print("\nPlease enter a single letter.")
-            return False
+        # Add the guess to the set
+        guessed_letters.add(guess)
         
-        # Process the guess
-        if letter in self.secret_word:
-            self.guessed_letters.add(letter)
-            print(f"\nGood guess! '{letter}' is in the word.")
-            
-            # Check if the player has won
-            if set(self.secret_word) == self.guessed_letters:
-                self.won = True
-                self.game_over = True
-        else:
-            self.incorrect_guesses.add(letter)
-            self.remaining_attempts -= 1
-            print(f"\nSorry! '{letter}' is not in the word.")
-            
-            # Check if the player has lost
-            if self.remaining_attempts == 0:
-                self.game_over = True
+        # Display current state of the word
+        current_display = display_word(word, guessed_letters)
+        print(current_display)
         
-        return True
-    
-    def display_game_state(self):
-        """
-        Display the current state of the game.
-        """
-        print("\n" + self.display_hangman())
-        print(f"\nWord: {self.get_display_word()}")
-        print(f"Remaining attempts: {self.remaining_attempts}")
-        print(f"Incorrect guesses: {', '.join(sorted(self.incorrect_guesses)) if self.incorrect_guesses else 'None'}")
-        print(f"Correct guesses: {', '.join(sorted(self.guessed_letters)) if self.guessed_letters else 'None'}")
-    
-    def play(self):
-        """
-        Main game loop.
-        """
-        self.start_new_game()
-        
-        while not self.game_over:
-            self.display_game_state()
-            guess = input("\nEnter your guess (a single letter): ").strip()
-            self.make_guess(guess)
-        
-        # Display final game state
-        self.display_game_state()
-        
-        # Display result
-        if self.won:
-            print("\n" + "="*50)
-            print("🎉 CONGRATULATIONS! YOU WON! 🎉")
-            print(f"The word was: {self.secret_word}")
-            print("="*50)
-        else:
-            print("\n" + "="*50)
-            print("😢 GAME OVER! YOU LOST! 😢")
-            print(f"The word was: {self.secret_word}")
-            print("="*50)
-
-
-# Main program
-if __name__ == "__main__":
-    # Define a list of words for the game
-    word_list = [
-        "python", "javascript", "programming", "algorithm", "computer",
-        "artificial", "intelligence", "machine", "learning", "network",
-        "database", "software", "hardware", "keyboard", "monitor"
-    ]
-    
-    # Create and play the game
-    game = HangmanGame(word_list, max_attempts=6)
-    
-    while True:
-        game.play()
-        
-        # Ask if the player wants to play again
-        play_again = input("\nDo you want to play again? (yes/no): ").strip().lower()
-        if play_again not in ['yes', 'y']:
-            print("\nThanks for playing Hangman! Goodbye!")
+        # Check if the player has won
+        if all(letter in guessed_letters for letter in word):
+            print(f"The word is: {word}")
+            print("Congratulations, You won!")
             break
+
+# Run the game
+if __name__ == "__main__":
+    hangman_game()
 ```
 
 ## Output:
 ```
-==================================================
-NEW HANGMAN GAME STARTED!
-==================================================
-
-               --------
-               |      |
-               |      
-               |    
-               |      
-               |     
-               -
-            
-Word: _ _ _ _ _ _
-Remaining attempts: 6
-Incorrect guesses: None
-Correct guesses: None
-
-Enter your guess (a single letter): p
-
-Good guess! 'P' is in the word.
-
-               --------
-               |      |
-               |      
-               |    
-               |      
-               |     
-               -
-            
-Word: P _ _ _ _ _
-Remaining attempts: 6
-Incorrect guesses: None
-Correct guesses: P
-
-Enter your guess (a single letter): y
-
-Good guess! 'Y' is in the word.
-
-               --------
-               |      |
-               |      
-               |    
-               |      
-               |     
-               -
-            
-Word: P Y _ _ _ _
-Remaining attempts: 6
-Incorrect guesses: None
-Correct guesses: P, Y
-
-Enter your guess (a single letter): t
-
-Good guess! 'T' is in the word.
-
-               --------
-               |      |
-               |      
-               |    
-               |      
-               |     
-               -
-            
-Word: P Y T _ _ _
-Remaining attempts: 6
-Incorrect guesses: None
-Correct guesses: P, T, Y
-
-Enter your guess (a single letter): h
-
-Good guess! 'H' is in the word.
-
-               --------
-               |      |
-               |      
-               |    
-               |      
-               |     
-               -
-            
-Word: P Y T H _ _
-Remaining attempts: 6
-Incorrect guesses: None
-Correct guesses: H, P, T, Y
-
-Enter your guess (a single letter): o
-
-Good guess! 'O' is in the word.
-
-               --------
-               |      |
-               |      
-               |    
-               |      
-               |     
-               -
-            
-Word: P Y T H O _
-Remaining attempts: 6
-Incorrect guesses: None
-Correct guesses: H, O, P, T, Y
-
-Enter your guess (a single letter): n
-
-Good guess! 'N' is in the word.
-
-               --------
-               |      |
-               |      
-               |    
-               |      
-               |     
-               -
-            
-Word: P Y T H O N
-Remaining attempts: 6
-Incorrect guesses: None
-Correct guesses: H, N, O, P, T, Y
-
-==================================================
-🎉 CONGRATULATIONS! YOU WON! 🎉
-The word was: PYTHON
-==================================================
-
-Do you want to play again? (yes/no): no
-
-Thanks for playing Hangman! Goodbye!
+Guess the word! HINT: word is a name of a fruit
+_ _ _ _ _ _
+Enter a letter to guess: b
+b _ _ _ _ _
+Enter a letter to guess: a
+b a _ a _ a
+Enter a letter to guess: n
+b a n a n a
+The word is: banana
+Congratulations, You won!
 ```
 
 ## Explanation of the output:
-The output demonstrates a successful game of Hangman where the player correctly guesses the word "PYTHON" without making any incorrect guesses.
+The output demonstrates a successful game of Hangman where the player correctly guesses the word "banana" by entering three strategic letters.
 
-1. **Game Initialization**: The game starts by selecting a random word from the word list and displaying the initial state with all letters hidden as underscores.
+1. **Game Start**: The game begins by displaying a hint that the word is a fruit name, followed by the word represented as six underscores "_ _ _ _ _ _", indicating a six-letter word.
 
-2. **Letter 'P' Guess**: The player guesses 'P', which is in the word. The display updates to show "P _ _ _ _ _" and the letter is added to the correct guesses list.
+2. **First Guess - Letter 'b'**: The player guesses the letter 'b'. Since 'b' is the first letter of "banana", the display updates to show "b _ _ _ _ _", revealing the position of 'b' at the start of the word.
 
-3. **Letter 'Y' Guess**: The player guesses 'Y', another correct letter. The word display becomes "P Y _ _ _ _".
+3. **Second Guess - Letter 'a'**: The player guesses 'a', which appears multiple times in the word "banana". The display updates to "b a _ a _ a", revealing all three occurrences of the letter 'a' in positions 2, 4, and 6.
 
-4. **Letter 'T' Guess**: The player correctly guesses 'T', revealing more of the word: "P Y T _ _ _".
+4. **Third Guess - Letter 'n'**: The player guesses 'n', which is also present in the word. The display now shows "b a n a n a", completing the entire word. At this point, all letters have been guessed correctly.
 
-5. **Letter 'H' Guess**: The player guesses 'H', which is in the word. The display shows "P Y T H _ _".
+5. **Game Completion**: The program detects that all letters in the word have been guessed, displays the complete word "banana", and shows a congratulations message, indicating the player has won the game.
 
-6. **Letter 'O' Guess**: The player correctly guesses 'O', and the word becomes "P Y T H O _".
-
-7. **Letter 'N' Guess**: The final guess 'N' completes the word "P Y T H O N", triggering the win condition.
-
-8. **Victory Message**: The game displays a congratulations message and reveals the complete word. Since the player made no incorrect guesses, all 6 attempts remain unused.
+This example demonstrates an optimal game where the player wins after just three guesses by choosing letters that appear multiple times in the target word.
 
 ## Explanation of the Programme and Output:
 
-The program implements an interactive word-guessing game using object-oriented programming principles and demonstrates several AI and game development concepts.
+The program implements a simplified word-guessing game that demonstrates fundamental AI concepts including state tracking, user interaction, and win-condition evaluation.
 
 ### State Representation:
-The game state is maintained through class attributes including `secret_word`, `guessed_letters`, `incorrect_guesses`, and `remaining_attempts`. This comprehensive state tracking allows the game to make decisions about valid moves and end conditions.
+The game maintains its state through two key variables: the secret `word` (selected randomly from a fruit list) and `guessed_letters` (a set tracking all letters the player has guessed). This minimal state representation is sufficient to determine game progress and completion.
 
-### Game Logic and Decision Making:
-The `make_guess()` method implements the core game logic, validating input, checking if letters have been guessed before, and updating the game state accordingly. It demonstrates conditional decision-making based on the current state.
+### Word Display Function:
+The `display_word()` function is the core visualization component. It iterates through each letter in the secret word, displaying the actual letter if it has been guessed, or an underscore if it hasn't. This provides immediate visual feedback to the player about their progress.
 
-### Visual Feedback:
-The `display_hangman()` method provides visual feedback through ASCII art representations of the hangman at different stages. This enhances user experience and makes the game more engaging.
+### Game Loop and Logic:
+The main `hangman_game()` function implements a simple but effective game loop:
+- It continuously prompts the user for letter guesses
+- Validates that the input is a single alphabetic character
+- Checks for duplicate guesses to avoid redundancy
+- Updates the display after each valid guess
+- Checks the win condition after every guess
 
-### Win/Lose Conditions:
-The program checks for two terminal conditions:
-- **Win**: When all unique letters in the secret word have been correctly guessed (`set(self.secret_word) == self.guessed_letters`)
-- **Lose**: When the player runs out of attempts (`remaining_attempts == 0`)
+### Win Condition:
+The program uses Python's `all()` function with a generator expression to check if every letter in the word has been guessed: `all(letter in guessed_letters for letter in word)`. This elegant approach eliminates the need for manual iteration and makes the code more readable.
 
-### Interactive Loop:
-The `play()` method implements the main game loop, continuously accepting user input and updating the game state until a terminal condition is reached. This demonstrates interactive agent behavior responding to user actions.
+### User Experience:
+The game provides clear prompts and feedback at each step. The hint "word is a name of a fruit" gives context, while the progressive letter revelation keeps the player engaged. The simple output format makes it easy to follow the game's progress without unnecessary complexity.
 
-### Replayability:
-The program includes functionality to play multiple games in succession, allowing the user to continue playing or exit gracefully after each game concludes.
+### Simplicity and Focus:
+Unlike more complex implementations with attempt limits and hangman drawings, this version focuses on the core word-guessing mechanic. This makes it ideal for demonstrating basic AI agent concepts without overwhelming detail, while still providing an engaging interactive experience.
