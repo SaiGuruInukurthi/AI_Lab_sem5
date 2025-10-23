@@ -1,7 +1,7 @@
 # Experiment 3
 
 ## Aim:
-To implement an AI agent in Python that solves the classic Monkey and Banana problem by finding an optimal sequence of actions using the Breadth-First Search (BFS) algorithm.
+Write a program to solve Monkey & Banana Problem.
 
 ## Description:
 The Monkey and Banana problem is a well-known toy problem in artificial intelligence used to demonstrate planning and problem-solving. In this scenario, a monkey is in a room where a banana is hanging from the ceiling, just out of its reach. There is also a box in the room that the monkey can use.

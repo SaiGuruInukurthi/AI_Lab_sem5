@@ -3,7 +3,7 @@
 
 
 ## Aim:
-To implement Breadth-First Search (BFS) and Uniform-Cost Search algorithms for graph traversal and pathfinding, demonstrating uninformed search strategies in Artificial Intelligence.
+Write a program to solve Shortest path problem: (i) Using BFS (ii) Using Lowest-cost-first search.
 
 ## Description:
 

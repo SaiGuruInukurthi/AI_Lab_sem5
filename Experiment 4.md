@@ -1,7 +1,7 @@
 # Experiment-4
 
 ## Aim:
-To write a Python program to solve the Water Jug problem by simulating the state changes based on user-defined operations, demonstrating a classic state-space search problem in Artificial Intelligence.
+Write a program to solve Water-Jug problem (PROLOG).
 
 ## Description:
 The Water Jug problem is a well-known problem in AI. The general problem statement involves being given two jugs with different capacities and a water source, with the objective of measuring out a specific amount of water in one of the jugs.

@@ -1,7 +1,7 @@
 # Experiment 8
 
 ## Aim:
-To implement a Hangman word-guessing game in Python using artificial intelligence concepts to demonstrate interactive game playing, state management, and user interaction.
+Write a program to implement Hangman game (Or Wordle).
 
 ## Description:
 Hangman is a classic word-guessing game where a player tries to guess a hidden word by suggesting letters within a certain number of attempts. The game is an excellent demonstration of AI concepts such as state representation, decision-making, and game logic.

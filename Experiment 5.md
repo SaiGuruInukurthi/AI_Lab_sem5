@@ -1,7 +1,7 @@
 # Experiment-5
 
 ## Aim:
-To write a Python program that solves the 8-Puzzle problem using the A* search algorithm, employing a heuristic function to determine the optimal path from a given start state to a goal state.
+Write a program to solve 8-tiles puzzle problem (Using heuristics).
 
 ## Description:
 The 8-Puzzle is a classic problem in Artificial Intelligence that involves a 3x3 grid with 8 numbered tiles and one blank space (_). The objective is to rearrange the tiles from a random initial configuration to a specified goal configuration by repeatedly sliding a tile into the adjacent blank space.

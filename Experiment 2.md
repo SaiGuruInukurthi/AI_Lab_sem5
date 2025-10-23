@@ -1,7 +1,7 @@
 # Experiment 2
 
 ## Aim:
-To write a Python program that simulates the behavior of a simple reflex agent for the vacuum cleaner problem in a world with two rooms.
+Write a program to control the VACUUM Cleaner moves (Intelligent systems design process).
 
 ## Description:
 The vacuum cleaner problem is a classic search problem in Artificial Intelligence.[1] In this scenario, we have a simple agent, the vacuum cleaner, operating in a small environment consisting of two rooms. The goal of the agent is to clean both rooms, regardless of its starting position and the initial distribution of dirt.
