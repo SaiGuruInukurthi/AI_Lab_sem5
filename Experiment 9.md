@@ -4,336 +4,143 @@
 Write a program to understand Inferential logic using KANREN, SYMPY, pyDatalog packages in Python.
 
 ## Description:
-Propositional Logic (also called Propositional Calculus or Boolean Logic) is a branch of logic that deals with propositions which can be true or false. It forms the foundation of logical reasoning in artificial intelligence and is used in knowledge representation, automated theorem proving, and decision-making systems.
+Propositional logic (or Boolean logic) deals with statements that are either True or False and logical connectives like AND, OR, NOT, IMPLIES.
 
-In propositional logic, we work with:
+This experiment demonstrates the use of three Python libraries for logical reasoning:
 
-**Propositions**: Statements that can be either true or false (e.g., "It is raining", "The sky is blue").
+### SymPy — Symbolic Propositional Logic
+SymPy is a symbolic mathematics library that can handle logical expressions and evaluate them.
 
-**Logical Operators**: Symbols that combine propositions to form compound statements:
-- **NOT (¬)**: Negation - reverses the truth value
-- **AND (∧)**: Conjunction - true only if both operands are true
-- **OR (∨)**: Disjunction - true if at least one operand is true
-- **IMPLIES (→)**: Implication - false only if antecedent is true and consequent is false
-- **IFF (↔)**: Biconditional - true if both operands have the same truth value
+**Key Features:**
+- Define propositional variables
+- Build expressions using And, Or, Not, Implies, Equivalent
+- Evaluate truth values for different assignments
 
-This program implements a propositional logic evaluator that can parse logical expressions, evaluate them for given truth assignments, generate truth tables, and check for tautologies and contradictions.
+### KANREN — Logical Relations
+KANREN is a logic programming library in Python. It is not purely propositional logic, but helps in defining relations and querying them (like small logic programs).
+
+**Key Features:**
+- Define relations and facts
+- Use logic variables to query unknowns
+- Supports relational reasoning
+
+### pyDatalog — Logic Programming with Rules
+pyDatalog is a Python library that brings logic programming features into Python using Datalog.
+
+**Key Features:**
+- Define facts and rules
+- Perform logical inference
+- Supports queries that derive new facts from existing ones
 
 ## Problem Setup:
 
-**Input Components**:
-- **Propositional Variables**: Atomic propositions represented by letters (e.g., P, Q, R)
-- **Logical Expression**: A formula combining variables with logical operators
-- **Truth Assignment**: Assignment of truth values (True/False) to each variable
+This experiment requires installing three Python packages:
+- **kanren**: For logical relations and relational reasoning
+- **sympy**: For symbolic propositional logic
+- **pyDatalog**: For logic programming with rules and facts
 
-**Operations**:
-- Evaluate expressions with given truth values
-- Generate complete truth tables
-- Check for tautologies (always true)
-- Check for contradictions (always false)
-- Determine logical equivalence between expressions
+Install using:
+```bash
+pip install kanren sympy pyDatalog
+```
 
 ## Programme:
 
+### Installing Required Packages:
 ```python
-from itertools import product
+!pip install kanren sympy pyDatalog
+```
 
-class PropositionLogic:
-    """
-    A class to represent and evaluate propositional logic expressions.
-    """
-    
-    def __init__(self):
-        """
-        Initialize the propositional logic system.
-        """
-        self.variables = set()
-    
-    def NOT(self, p):
-        """Logical NOT operation."""
-        return not p
-    
-    def AND(self, p, q):
-        """Logical AND operation."""
-        return p and q
-    
-    def OR(self, p, q):
-        """Logical OR operation."""
-        return p or q
-    
-    def IMPLIES(self, p, q):
-        """Logical IMPLIES operation (p → q)."""
-        return (not p) or q
-    
-    def IFF(self, p, q):
-        """Logical IFF (if and only if) operation (p ↔ q)."""
-        return p == q
-    
-    def extract_variables(self, expression):
-        """
-        Extract propositional variables from an expression string.
-        """
-        variables = set()
-        for char in expression:
-            if char.isalpha() and char.isupper():
-                variables.add(char)
-        return sorted(variables)
-    
-    def evaluate(self, expression, values):
-        """
-        Evaluate a logical expression with given truth values.
-        
-        Args:
-            expression: String containing the logical expression
-            values: Dictionary mapping variables to boolean values
-        
-        Returns:
-            Boolean result of the evaluation
-        """
-        # Replace variables with their truth values
-        expr = expression
-        for var, val in values.items():
-            expr = expr.replace(var, str(val))
-        
-        # Replace logical operators with Python equivalents
-        expr = expr.replace('NOT', 'not')
-        expr = expr.replace('AND', 'and')
-        expr = expr.replace('OR', 'or')
-        
-        # Evaluate the expression
-        return eval(expr)
-    
-    def generate_truth_table(self, expression):
-        """
-        Generate a complete truth table for a logical expression.
-        """
-        variables = self.extract_variables(expression)
-        n = len(variables)
-        
-        print(f"\nTruth Table for: {expression}")
-        print("=" * (15 * n + 20))
-        
-        # Print header
-        header = " | ".join(variables) + " | Result"
-        print(header)
-        print("-" * len(header))
-        
-        # Generate all possible combinations of truth values
-        results = []
-        for values in product([False, True], repeat=n):
-            value_dict = dict(zip(variables, values))
-            result = self.evaluate(expression, value_dict)
-            results.append(result)
-            
-            # Print row
-            row = " | ".join([str(v)[0] for v in values]) + f" | {str(result)[0]}"
-            print(row)
-        
-        print("=" * (15 * n + 20))
-        return results
-    
-    def is_tautology(self, expression):
-        """
-        Check if an expression is a tautology (always true).
-        """
-        variables = self.extract_variables(expression)
-        n = len(variables)
-        
-        for values in product([False, True], repeat=n):
-            value_dict = dict(zip(variables, values))
-            if not self.evaluate(expression, value_dict):
-                return False
-        return True
-    
-    def is_contradiction(self, expression):
-        """
-        Check if an expression is a contradiction (always false).
-        """
-        variables = self.extract_variables(expression)
-        n = len(variables)
-        
-        for values in product([False, True], repeat=n):
-            value_dict = dict(zip(variables, values))
-            if self.evaluate(expression, value_dict):
-                return False
-        return True
-    
-    def are_equivalent(self, expr1, expr2):
-        """
-        Check if two expressions are logically equivalent.
-        """
-        # Get all variables from both expressions
-        variables = sorted(set(self.extract_variables(expr1) + self.extract_variables(expr2)))
-        n = len(variables)
-        
-        for values in product([False, True], repeat=n):
-            value_dict = dict(zip(variables, values))
-            result1 = self.evaluate(expr1, value_dict)
-            result2 = self.evaluate(expr2, value_dict)
-            if result1 != result2:
-                return False
-        return True
+### Example 1: SymPy - Symbolic Propositional Logic
+```python
+from sympy import symbols
+from sympy.logic.boolalg import And, Or, Not
 
+# Define logical variables
+P, Q = symbols('P Q')
 
-# Example usage
-if __name__ == "__main__":
-    logic = PropositionLogic()
-    
-    print("="*60)
-    print("PROPOSITIONAL LOGIC EVALUATOR")
-    print("="*60)
-    
-    # Example 1: Simple evaluation
-    print("\n--- Example 1: Evaluating expressions ---")
-    expr1 = "P AND Q"
-    values1 = {'P': True, 'Q': False}
-    result1 = logic.evaluate(expr1, values1)
-    print(f"Expression: {expr1}")
-    print(f"Values: {values1}")
-    print(f"Result: {result1}")
-    
-    # Example 2: Truth table for P OR Q
-    print("\n--- Example 2: Truth Table ---")
-    expr2 = "P OR Q"
-    logic.generate_truth_table(expr2)
-    
-    # Example 3: Truth table for complex expression
-    print("\n--- Example 3: Complex Expression ---")
-    expr3 = "P AND (Q OR R)"
-    logic.generate_truth_table(expr3)
-    
-    # Example 4: Checking tautology
-    print("\n--- Example 4: Tautology Check ---")
-    expr4 = "P OR (NOT P)"
-    is_taut = logic.is_tautology(expr4)
-    print(f"Expression: {expr4}")
-    print(f"Is Tautology: {is_taut}")
-    logic.generate_truth_table(expr4)
-    
-    # Example 5: Checking contradiction
-    print("\n--- Example 5: Contradiction Check ---")
-    expr5 = "P AND (NOT P)"
-    is_contra = logic.is_contradiction(expr5)
-    print(f"Expression: {expr5}")
-    print(f"Is Contradiction: {is_contra}")
-    logic.generate_truth_table(expr5)
-    
-    # Example 6: Logical equivalence
-    print("\n--- Example 6: Logical Equivalence ---")
-    expr6a = "NOT (P AND Q)"
-    expr6b = "(NOT P) OR (NOT Q)"
-    are_equiv = logic.are_equivalent(expr6a, expr6b)
-    print(f"Expression 1: {expr6a}")
-    print(f"Expression 2: {expr6b}")
-    print(f"Are Equivalent: {are_equiv} (De Morgan's Law)")
+# Simple logical expression: P AND Q
+expr = And(P, Q)
+
+# Evaluate with different values
+print(expr.subs({P: True, Q: True}))   # True
+print(expr.subs({P: True, Q: False}))  # False
+```
+
+### Example 2: pyDatalog - Logic Programming with Rules
+```python
+from pyDatalog import pyDatalog
+
+pyDatalog.create_terms('parent, X')
+
+# Add a simple fact
++ parent('Alice', 'Bob')
+
+# Query
+print(parent('Alice', X))
 ```
 
 ## Output:
+
+### Package Installation Output:
 ```
-============================================================
-PROPOSITIONAL LOGIC EVALUATOR
-============================================================
+Requirement already satisfied: kanren in /usr/local/lib/python3.12/dist-packages (0.2.3)
+Requirement already satisfied: sympy in /usr/local/lib/python3.12/dist-packages (1.13.3)
+Requirement already satisfied: pyDatalog in /usr/local/lib/python3.12/dist-packages (0.17.4)
+Requirement already satisfied: toolz in /usr/local/lib/python3.12/dist-packages (from kanren) (0.12.1)
+Requirement already satisfied: multipledispatch in /usr/local/lib/python3.12/dist-packages (from kanren) (1.0.0)
+Requirement already satisfied: unification in /usr/local/lib/python3.12/dist-packages (from kanren) (0.2.2)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in /usr/local/lib/python3.12/dist-packages (from sympy) (1.3.0)
+```
 
---- Example 1: Evaluating expressions ---
-Expression: P AND Q
-Values: {'P': True, 'Q': False}
-Result: False
+### Example 1 Output - SymPy:
+```
+True
+False
+```
 
---- Example 2: Truth Table ---
-
-Truth Table for: P OR Q
-==============================
-P | Q | Result
---------------
-F | F | F
-F | T | T
-T | F | T
-T | T | T
-==============================
-
---- Example 3: Complex Expression ---
-
-Truth Table for: P AND (Q OR R)
-===============================================
-P | Q | R | Result
--------------------
-F | F | F | F
-F | F | T | F
-F | T | F | F
-F | T | T | F
-T | F | F | F
-T | F | T | T
-T | T | F | T
-T | T | T | T
-===============================================
-
---- Example 4: Tautology Check ---
-Expression: P OR (NOT P)
-Is Tautology: True
-
-Truth Table for: P OR (NOT P)
-==============================
-P | Result
-----------
-F | T
-T | T
-==============================
-
---- Example 5: Contradiction Check ---
-Expression: P AND (NOT P)
-Is Contradiction: True
-
-Truth Table for: P AND (NOT P)
-==============================
-P | Result
-----------
-F | F
-T | F
-==============================
-
---- Example 6: Logical Equivalence ---
-Expression 1: NOT (P AND Q)
-Expression 2: (NOT P) OR (NOT Q)
-Are Equivalent: True (De Morgan's Law)
+### Example 2 Output - pyDatalog:
+```
+X
+---
+Bob
 ```
 
 ## Explanation of the output:
 
-The output demonstrates various operations and concepts in propositional logic through six examples.
+**Package Installation**: The first output shows that all three required packages (kanren, sympy, and pyDatalog) are successfully installed along with their dependencies. These packages enable different approaches to logical reasoning in Python.
 
-**Example 1 - Simple Evaluation**: The expression "P AND Q" is evaluated with P=True and Q=False. Since AND requires both operands to be true, the result is False. This shows basic expression evaluation with specific truth assignments.
+**SymPy Example**: 
+- The expression `And(P, Q)` represents the logical conjunction "P AND Q"
+- First evaluation: `P=True, Q=True` → Result is `True` (both conditions are met)
+- Second evaluation: `P=True, Q=False` → Result is `False` (not all conditions are met)
 
-**Example 2 - OR Truth Table**: The truth table for "P OR Q" shows all four possible combinations of truth values for two variables. The OR operation returns True when at least one operand is True, which is evident from three out of four rows being True.
+This demonstrates how SymPy can symbolically represent logical expressions and evaluate them with different truth value assignments.
 
-**Example 3 - Complex Expression**: The expression "P AND (Q OR R)" involves three variables and demonstrates operator precedence. The table shows 8 rows (2³ combinations). The result is True only when P is True AND at least one of Q or R is True, which occurs in rows 6, 7, and 8.
+**pyDatalog Example**:
+- We define a fact: `parent('Alice', 'Bob')` meaning "Alice is the parent of Bob"
+- We query: `parent('Alice', X)` asking "Who is Alice a parent of?"
+- The system responds with `X = Bob`, finding all values that satisfy the relation
 
-**Example 4 - Tautology**: The expression "P OR (NOT P)" is identified as a tautology - a statement that is always true regardless of the truth values of its variables. The truth table confirms this by showing True in the Result column for both P=False and P=True. This is known as the Law of Excluded Middle.
-
-**Example 5 - Contradiction**: The expression "P AND (NOT P)" is identified as a contradiction - a statement that is always false. The truth table shows False for all truth value assignments. This violates the Law of Non-Contradiction, as a proposition cannot be both true and false simultaneously.
-
-**Example 6 - Logical Equivalence**: Two expressions are tested for logical equivalence using De Morgan's Law. The law states that the negation of a conjunction equals the disjunction of the negations: ¬(P ∧ Q) ≡ (¬P ∨ ¬Q). The program confirms these expressions are equivalent, meaning they produce identical truth values for all possible input combinations.
+This demonstrates logic programming where facts are declared and queries can find unknown values that make statements true.
 
 ## Explanation of the Programme and Output:
 
-The program implements a complete propositional logic system using object-oriented programming and demonstrates fundamental concepts in formal logic and automated reasoning.
+### SymPy - Symbolic Logic:
+SymPy treats logical variables as symbolic objects rather than simple boolean values. This allows for algebraic manipulation of logical expressions, simplification, and evaluation. The `And`, `Or`, and `Not` functions create symbolic expressions that can be evaluated using the `.subs()` method by substituting actual truth values.
 
-### Logic Operations Implementation:
-The `PropositionLogic` class implements the five basic logical operators: NOT, AND, OR, IMPLIES, and IFF. These methods form the foundation of propositional logic and can be combined to create complex logical expressions. The implementation uses Python's native boolean operations for efficiency and clarity.
+### pyDatalog - Declarative Logic Programming:
+pyDatalog follows the Datalog paradigm where you declare facts and rules, then query the system. The `+` operator adds facts to the knowledge base. When querying with a variable (like `X`), the system performs logical inference to find all values that satisfy the relationship. This is particularly useful for relational data and deriving new information from existing facts.
 
-### Expression Evaluation:
-The `evaluate()` method takes a logical expression as a string and a dictionary of truth value assignments. It performs substitution of variables with their values and then uses Python's `eval()` function to compute the result. This approach allows for flexible expression syntax while maintaining security within the controlled environment of logical operations.
-
-### Truth Table Generation:
-The `generate_truth_table()` method demonstrates exhaustive evaluation by generating all possible combinations of truth values using `itertools.product()`. For n variables, it generates 2ⁿ rows, covering the complete state space. This systematic approach ensures no case is overlooked and provides a complete picture of the expression's behavior.
-
-### Tautology and Contradiction Detection:
-The program can identify special cases: tautologies (always true) and contradictions (always false). These are important in logic because tautologies represent logical truths that don't depend on specific facts, while contradictions represent logical impossibilities. This capability is essential for automated theorem proving and logical reasoning systems.
-
-### Logical Equivalence:
-The `are_equivalent()` method checks if two expressions are logically equivalent by comparing their truth values across all possible variable assignments. This is crucial for simplifying logical expressions, verifying logical laws (like De Morgan's Laws), and optimizing logical circuits in computer hardware design.
+### KANREN - Relational Programming:
+While not demonstrated in the basic example, KANREN enables miniKanren-style logic programming in Python. It allows defining relations between variables and solving constraint satisfaction problems through unification and search.
 
 ### Applications in AI:
-This implementation demonstrates core concepts used in AI systems for knowledge representation (expressing facts and rules), inference engines (deriving new knowledge from existing facts), and constraint satisfaction problems (checking consistency of constraints). The truth table approach, while computationally expensive for many variables, provides a definitive answer and is useful for educational purposes and small-scale problems.
+These libraries are valuable for:
+- **Knowledge Representation**: Storing facts and rules about a domain
+- **Automated Reasoning**: Deriving new conclusions from existing knowledge
+- **Constraint Solving**: Finding values that satisfy logical constraints
+- **Expert Systems**: Building systems that reason with symbolic logic
+- **Semantic Web**: Processing and reasoning with ontologies and relationships
 
-### State Space Exploration:
-The systematic generation of all truth value combinations represents a form of state space search, a fundamental AI technique. For larger problems, more sophisticated methods like SAT solvers would be used, but this implementation clearly illustrates the underlying principles.
+The combination of these three approaches provides a comprehensive toolkit for logical reasoning in AI applications.
